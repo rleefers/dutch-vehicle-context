@@ -1,0 +1,36 @@
+name = "dutch-vehicle-context"
+main = "src/index.ts"
+compatibility_date = "2026-04-28"
+# De MCP-SDK (agents/mcp/server) importeert node:async_hooks; zonder deze vlag weigert de
+# runtime te starten met: No such module "node:async_hooks".
+compatibility_flags = ["nodejs_compat"]
+# account_id = "<jouw Cloudflare account id>"   # vul je eigen id in
+
+# Bewust GEEN voorberekende indexen en dus geen `rules`-blok. Alle RDW-data wordt live
+# bevraagd; de Socrata-API doet 240-480 ms en dat is snel genoeg. Bij het zusterproject
+# dutch-property-context sloeg de koude start om van 0,2 naar 9 seconden zodra de bundle
+# boven ~3,7 MB kwam (gemeten 2026-08-16). Die val is hier vermeden door hem niet te graven.
+
+[vars]
+CACHE_TTL_SECONDS = "3600"
+
+# Rate limiting per IP via een Durable Object met SQLite-opslag.
+#
+# Niet de ingebouwde `ratelimit`-binding: die is op dit account gemeten en telt niet
+# (40 verzoeken op rij, 40x success=true). Zie ADR-003 van dutch-property-context.
+#
+# Anders dan daar is dit hier GEEN licentievoorwaarde — RDW-data staat onder CC0 en kent
+# geen doorleververbod. Het is fair use: de RDW-bijsluiter zegt "Performance vindt plaats
+# op basis van fair use". Eén verzoek hier veroorzaakt tot negen verzoeken bij de RDW, dus
+# een open endpoint zou hun platform belasten en niet het onze.
+[[durable_objects.bindings]]
+name = "RATE_LIMITER"
+class_name = "RateLimiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RateLimiter"]
+
+[observability]
+enabled = true
+head_sampling_rate = 1
