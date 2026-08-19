@@ -17,6 +17,14 @@ https://vehicle-context.tradebrite.nl
 
 ## Aansluiten in 10 seconden
 
+[![Add dutch-vehicle-context MCP server to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=dutch-vehicle-context&config=eyJ1cmwiOiJodHRwczovL3ZlaGljbGUtY29udGV4dC50cmFkZWJyaXRlLm5sL21jcCJ9)
+
+**Claude** (web of desktop, elk abonnement): *Customize → Connectors → + → Add custom connector*, plak `https://vehicle-context.tradebrite.nl/mcp`.
+
+**ChatGPT:** custom connectors vereisen Developer Mode (Pro/Team/Enterprise/Edu); op Plus kan het niet — gebruik daar de HTTPS-API.
+
+**Claude Code:**
+
 ```bash
 claude mcp add --transport http vehicle-context https://vehicle-context.tradebrite.nl/mcp
 ```
